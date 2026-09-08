@@ -1,0 +1,9 @@
+biomarker_id,pt_code,evidence_grade,confidence
+BM-ALT,PT-DILI,A,0.94
+BM-AST,PT-DILI,A,0.89
+BM-TBIL,PT-DILI,A,0.91
+BM-QTCF,PT-QTP,A,0.97
+BM-ANC,PT-NEUT,A,0.96
+BM-PLT,PT-THROM,A,0.95
+BM-IL6,PT-IRR,B,0.72
+BM-CRP,PT-IRR,C,0.55

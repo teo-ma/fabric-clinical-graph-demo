@@ -1,0 +1,7 @@
+target_id,gene_symbol,target_name_zh
+TGT-JAK1,JAK1,Janus 激酶 1
+TGT-IL6R,IL6R,白介素6受体
+TGT-HER2,ERBB2,人表皮生长因子受体2
+TGT-BTK,BTK,布鲁顿酪氨酸激酶
+TGT-CYP3A4,CYP3A4,细胞色素P450 3A4
+TGT-HERG,KCNH2,hERG 钾离子通道

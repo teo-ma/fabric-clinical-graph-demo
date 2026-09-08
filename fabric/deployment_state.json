@@ -1,0 +1,22 @@
+{
+  "workspace_id": "f630b8e9-2637-402a-b5f0-837329a1fc26",
+  "capacity_id": "0f6e9354-acfb-40ec-b6cb-81d94d8b8b68",
+  "lakehouses": {
+    "ctms": "fe2ce3df-a2d0-483d-83f0-d6cba18adc18",
+    "edc": "2d11c096-064e-4505-8cd5-ac1851fd61cb",
+    "safety": "4c76c642-b929-4572-9de5-0fbcb3f20257",
+    "lims": "620f47f3-c9f8-401b-aa02-2312693c65ef",
+    "knowledge": "8a9772a6-af7f-4187-81e2-3b3f5432bb62",
+    "supply": "a890126b-7a67-4d41-bea9-343982535e7b",
+    "curated": "e566dde0-33f2-4993-ac0d-26c51905b373"
+  },
+  "notebooks": {
+    "01_多源临床数据摄取": "aec10178-f053-4152-a979-f3a2338e5c56",
+    "02_统一临床图谱与业务洞察": "6cd10a9a-2cf1-4e2b-8cb8-1abe0ae2137a"
+  },
+  "graph_model_id": "e43bec85-7b84-48ca-b15f-b9c3494ec1be",
+  "ontology_id": "3e6302f2-d9f8-4984-8f74-cf63c31c865d",
+  "data_agent_id": "b9342643-468f-4cea-aa36-11ce3a354c90",
+  "data_agent_mcp": "https://api.fabric.microsoft.com/v1/mcp/workspaces/f630b8e9-2637-402a-b5f0-837329a1fc26/dataagents/b9342643-468f-4cea-aa36-11ce3a354c90/agent",
+  "agent_has_ontology_source": true
+}

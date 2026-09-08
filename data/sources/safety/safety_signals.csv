@@ -1,0 +1,4 @@
+signal_id,compound_id,pt_code,signal_status_zh,evidence_grade,detected_date
+SIG-001,CMP-001,PT-DILI,评估中,B,2026-05-18
+SIG-002,CMP-005,PT-QTP,已确认,A,2026-06-02
+SIG-003,CMP-004,PT-THROM,评估中,C,2026-06-21

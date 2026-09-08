@@ -1,0 +1,9 @@
+biomarker_id,analyte_code,biomarker_name_zh,unit,upper_normal_limit
+BM-ALT,ALT,丙氨酸氨基转移酶,U/L,41.0
+BM-AST,AST,天冬氨酸氨基转移酶,U/L,40.0
+BM-TBIL,TBIL,总胆红素,umol/L,21.0
+BM-QTCF,QTCF,QTcF 间期,ms,450.0
+BM-ANC,ANC,中性粒细胞绝对值,10^9/L,2.0
+BM-PLT,PLT,血小板计数,10^9/L,125.0
+BM-CRP,CRP,C反应蛋白,mg/L,8.0
+BM-IL6,IL6,白介素6,pg/mL,7.0

@@ -1,0 +1,4 @@
+study_id,protocol_no,compound_id,phase,indication_zh,study_status
+STU-001,SYN101-RA-201,CMP-001,II期,类风湿关节炎,进行中
+STU-002,SYN301-BC-101,CMP-004,I期,HER2阳性实体瘤,进行中
+STU-003,SYN401-LY-202,CMP-005,II期,B细胞淋巴瘤,进行中

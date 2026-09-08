@@ -1,0 +1,9 @@
+compound_id,target_id,interaction_type,evidence_grade,confidence
+CMP-001,TGT-JAK1,抑制,A,0.96
+CMP-001,TGT-CYP3A4,代谢底物,B,0.83
+CMP-002,TGT-JAK1,抑制,A,0.92
+CMP-003,TGT-IL6R,拮抗,A,0.95
+CMP-004,TGT-HER2,结合,A,0.97
+CMP-004,TGT-HERG,脱靶抑制,C,0.52
+CMP-005,TGT-BTK,共价抑制,A,0.94
+CMP-005,TGT-HERG,脱靶抑制,B,0.69

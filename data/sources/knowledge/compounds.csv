@@ -1,0 +1,6 @@
+compound_id,compound_code,compound_name_zh,modality,primary_target_id,dev_phase
+CMP-001,SYN-101,研究化合物 SYN-101,小分子,TGT-JAK1,II期
+CMP-002,SYN-102,研究化合物 SYN-102,小分子,TGT-JAK1,I期
+CMP-003,SYN-201,研究化合物 SYN-201,单克隆抗体,TGT-IL6R,II期
+CMP-004,SYN-301,研究化合物 SYN-301,抗体偶联药物,TGT-HER2,I期
+CMP-005,SYN-401,研究化合物 SYN-401,小分子,TGT-BTK,II期
