@@ -105,14 +105,14 @@ SCHEMAS = {
     ]),
     "graph_edges": StructType([
         s("edge_id"), s("source_node_id"), s("target_node_id"), s("relationship_type"),
-        s("relationship_type_zh"), s("evidence_grade"), d("confidence"), d("clinical_cost"),
+        s("relationship_type_zh"), s("evidence_grade"), d("confidence"), d("evidence_penalty"),
         s("edge_class"), s("source_system"), i("data_version"),
     ]),
     "gold_mechanism_paths": StructType([
         s("compound_id"), s("compound_name_zh"), s("ae_pt_code"), s("ae_pt_name_zh"),
         i("path_rank"), StructField("is_best_path", BooleanType(), True),
         s("path_node_ids"), s("path_display_zh"), i("hop_count"),
-        d("total_evidence_cost"), s("worst_evidence_grade"), d("min_confidence"),
+        d("total_evidence_penalty"), s("worst_evidence_grade"), d("min_confidence"),
         i("data_version"),
     ]),
     "gold_batch_impact": StructType([
@@ -127,7 +127,7 @@ SCHEMAS = {
         i("linked_ae_count"), i("serious_ae_count"), i("affected_subject_count"),
         i("affected_site_count"), i("supporting_abnormal_lab_count"),
         s("supporting_biomarkers_zh"), s("best_mechanism_path_zh"),
-        d("best_mechanism_cost"), i("data_version"),
+        d("best_mechanism_penalty"), i("data_version"),
     ]),
     "gold_target_crosstalk": StructType([
         s("compound_a"), s("compound_a_name_zh"), s("compound_b"), s("compound_b_name_zh"),

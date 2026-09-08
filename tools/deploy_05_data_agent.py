@@ -29,7 +29,7 @@ AI_INSTRUCTIONS = """你是面向制药企业临床开发团队的中文数据�
 回答规则：
 一、一律使用简体中文，业务编号如 SYN-101、BATCH-007、SIG-002 保持原样。
 二、只依据结果表回答，不要自行推断因果关系，不要给出医学建议。
-三、机制类问题查询 dbo.gold_mechanism_paths，按 total_evidence_cost 升序，is_best_path 为 true 的是证据最强链路，必须同时说明最差证据等级 worst_evidence_grade 与最低置信度 min_confidence。
+三、机制类问题查询 dbo.gold_mechanism_paths，按 total_evidence_penalty 升序，is_best_path 为 true 的是证据最强链路，必须同时说明最差证据等级 worst_evidence_grade 与最低置信度 min_confidence。向用户描述时称之为“证据折损”，并说明它是衡量不确定度的无量纲指标，与费用或预算无关。
 四、批次质量事件溯源查询 dbo.gold_batch_impact，需给出受影响中心与受试者数量，并单独列出 serious_flag 为“是”的严重不良事件。
 五、安全信号问题查询 dbo.gold_signal_evidence，需说明关联不良事件数、严重事件数、受影响受试者与中心数量、支持性异常检验数量，并给出最优机制路径。
 六、共享靶点或通路的风险外推查询 dbo.gold_target_crosstalk；研究中心风险画像查询 dbo.gold_site_risk。
@@ -48,20 +48,20 @@ AI_INSTRUCTIONS = """你是面向制药企业临床开发团队的中文数据�
 DATASOURCE_INSTRUCTIONS = """本 Lakehouse 存放跨六个源系统统一而成的临床知识图谱与业务结果表。
 
 优先使用 gold_ 开头的结果表回答业务问题，不要从 graph_edges 自行推导路径。
-graph_nodes 与 graph_edges 用于展示图规模与跨系统连接，node_type 区分实体类别，edge_class 区分“知识”边与“运营”边，clinical_cost 为证据成本，数值越小证据越强。"""
+graph_nodes 与 graph_edges 用于展示图规模与跨系统连接，node_type 区分实体类别，edge_class 区分“知识”边与“运营”边，evidence_penalty 为证据折损，数值越小证据越强。该值是无量纲的不确定度权重，不是金额。"""
 
 TABLES: dict[str, tuple[str, list[tuple[str, str]]]] = {
     "gold_mechanism_paths": (
-        "化合物到不良事件术语的机制解释链路，每个组合按证据成本排序。",
+        "化合物到不良事件术语的机制解释链路，每个组合按证据折损排序。",
         [("compound_id", "化合物编号，如 CMP-001。"),
          ("compound_name_zh", "化合物中文名，如 研究化合物 SYN-101。"),
          ("ae_pt_code", "不良事件术语编号，如 PT-DILI。"),
          ("ae_pt_name_zh", "不良事件中文名，如 药物性肝损伤。"),
-         ("path_rank", "同一组合下按证据成本升序的排名，1 为证据最强。"),
+         ("path_rank", "同一组合下按证据折损升序的排名，1 为证据最强。"),
          ("is_best_path", "是否为该组合下证据最强的链路。"),
          ("path_display_zh", "中文机制链路，形如 化合物 -> 靶点 -> 通路 -> 生物标志物 -> 不良事件。"),
          ("hop_count", "链路跳数。"),
-         ("total_evidence_cost", "证据成本合计，越小证据越强。"),
+         ("total_evidence_penalty", "证据折损合计，越小证据越强。无量纲，与费用无关。"),
          ("worst_evidence_grade", "链路中最差的证据等级。"),
          ("min_confidence", "链路中最低的置信度。")]),
     "gold_batch_impact": (
@@ -127,13 +127,13 @@ TABLES: dict[str, tuple[str, list[tuple[str, str]]]] = {
          ("edge_class", "边类别，取值 知识 或 运营。"),
          ("evidence_grade", "证据等级。"),
          ("confidence", "置信度。"),
-         ("clinical_cost", "证据成本，越小证据越强。"),
+         ("evidence_penalty", "证据折损，越小证据越强。无量纲，与费用无关。"),
          ("source_system", "该边来自哪个源系统。")]),
 }
 
 FEW_SHOTS = [
     ("研究化合物 SYN-101 与药物性肝损伤之间有哪些机制通路？哪条证据最强？",
-     "SELECT path_display_zh, hop_count, total_evidence_cost, worst_evidence_grade, "
+     "SELECT path_display_zh, hop_count, total_evidence_penalty, worst_evidence_grade, "
      "min_confidence, is_best_path FROM dbo.gold_mechanism_paths "
      "WHERE compound_id = 'CMP-001' AND ae_pt_code = 'PT-DILI' ORDER BY path_rank"),
     ("批次 BATCH-007 发生温度偏移，影响了哪些中心和受试者？其中谁发生了严重不良事件？",

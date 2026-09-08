@@ -65,7 +65,7 @@ def main() -> None:
                 key=lambda r: r["path_rank"])
     for r in q1:
         flag = "  <== 证据最强" if r["is_best_path"] else ""
-        print(f"  #{r['path_rank']} 成本 {r['total_evidence_cost']} "
+        print(f"  #{r['path_rank']} 折损 {r['total_evidence_penalty']} "
               f"最差等级 {r['worst_evidence_grade']} | {r['path_display_zh']}{flag}")
 
     print("\n=== Q2 批次溯源：BATCH-007 温度偏移 ===")

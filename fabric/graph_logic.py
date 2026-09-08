@@ -12,7 +12,9 @@ from __future__ import annotations
 
 DATA_VERSION = 1
 GRADE_PENALTY = {"A": 0.0, "B": 0.05, "C": 0.15, "D": 0.30}
-OPERATIONAL_COST = 0.01
+# Records from transactional systems are facts, not evidence claims, so they carry
+# a near-zero penalty that still keeps shorter operational chains preferred.
+OPERATIONAL_PENALTY = 0.01
 KNOWLEDGE_TYPES = ["Compound", "Target", "Pathway", "Biomarker", "AEType"]
 
 
@@ -54,8 +56,9 @@ class ClinicalGraph:
             return
         if str(source) not in self.nodes or str(target) not in self.nodes:
             return
-        cost = (round((1.0 - float(confidence)) + GRADE_PENALTY.get(evidence_grade, 0.3), 4)
-                if knowledge else OPERATIONAL_COST)
+        # Evidence penalty is a dimensionless uncertainty weight, not a monetary cost.
+        penalty = (round((1.0 - float(confidence)) + GRADE_PENALTY.get(evidence_grade, 0.3), 4)
+                   if knowledge else OPERATIONAL_PENALTY)
         self.edges.append({
             "edge_id": f"E{len(self.edges) + 1:06d}",
             "source_node_id": str(source),
@@ -64,7 +67,7 @@ class ClinicalGraph:
             "relationship_type_zh": rel_type_zh,
             "evidence_grade": evidence_grade,
             "confidence": round(float(confidence), 4),
-            "clinical_cost": cost,
+            "evidence_penalty": penalty,
             "edge_class": "知识" if knowledge else "运营",
             "source_system": source_system,
             "data_version": DATA_VERSION,
@@ -228,7 +231,7 @@ class ClinicalGraph:
             "path_node_ids": " -> ".join(ids),
             "path_display_zh": " -> ".join(self.nodes[i]["display_name_zh"] for i in ids),
             "hop_count": len(trail),
-            "total_evidence_cost": round(sum(e["clinical_cost"] for e in trail), 4),
+            "total_evidence_penalty": round(sum(e["evidence_penalty"] for e in trail), 4),
             "worst_evidence_grade": max(grades) if grades else "A",
             "min_confidence": round(min(e["confidence"] for e in trail), 4),
         }
@@ -243,7 +246,7 @@ class ClinicalGraph:
                 grouped.setdefault(trail[-1]["target_node_id"], []).append(
                     self._summarize(compound["node_id"], trail))
             for ae_code, paths in grouped.items():
-                paths.sort(key=lambda p: (p["total_evidence_cost"], p["hop_count"]))
+                paths.sort(key=lambda p: (p["total_evidence_penalty"], p["hop_count"]))
                 for rank, p in enumerate(paths, start=1):
                     out.append({
                         "compound_id": compound["node_id"],
@@ -336,7 +339,7 @@ class ClinicalGraph:
                 "supporting_biomarkers_zh": "、".join(
                     sorted({self.bm_name.get(b, b) for b in relevant})),
                 "best_mechanism_path_zh": mech["path_display_zh"] if mech else None,
-                "best_mechanism_cost": mech["total_evidence_cost"] if mech else None,
+                "best_mechanism_penalty": mech["total_evidence_penalty"] if mech else None,
                 "data_version": DATA_VERSION,
             })
         return out
@@ -459,7 +462,7 @@ QUESTION_CATALOG = [
     {"question_id": "Q1", "category_zh": "机制解释",
      "question_zh": "研究化合物 SYN-101 与药物性肝损伤之间有哪些机制通路？哪条证据最强？",
      "answer_table": "gold_mechanism_paths",
-     "guidance_zh": "按 total_evidence_cost 升序，is_best_path 为真的即为证据最强链路。"},
+     "guidance_zh": "按 total_evidence_penalty 升序，is_best_path 为真的即为证据最强链路。该值为证据折损，无量纲，与费用无关。"},
     {"question_id": "Q2", "category_zh": "质量事件溯源",
      "question_zh": "批次 BATCH-007 发生温度偏移，影响了哪些中心和受试者？其中谁发生了严重不良事件？",
      "answer_table": "gold_batch_impact",

@@ -32,7 +32,8 @@ SafetySignal 安全信号、Batch 药品批次、Shipment 运单、ProtocolDevia
 
 边属性：
 RelationshipType 英文关系；RelationshipTypeZh 中文关系；EdgeClass 取值 知识 或 运营；
-EvidenceGrade 证据等级 A 到 D；Confidence 置信度；ClinicalCost 证据成本，越小证据越强。
+EvidenceGrade 证据等级 A 到 D；Confidence 置信度；EvidencePenalty 证据折损，越小证据越强。
+证据折损是衡量不确定度的无量纲权重，与费用或预算无关。
 
 写 GQL 时的约定：
 一、多跳遍历使用 -[:CLINICAL_RELATIONSHIP]->{1,4} 这种数量限定写法，跳数上限不要超过 5。

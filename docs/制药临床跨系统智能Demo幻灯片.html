@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>制药临床开发跨系统智能问数 Demo · Microsoft Fabric</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+code, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+
+/* ---------- stage ---------- */
+#viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 720px;
+  transform-origin: center center;
+  transform: translate(-50%, -50%);
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+  padding: 44px 56px 52px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.slide.active { display: flex; animation: fade .28s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- headers ---------- */
+.eyebrow {
+  font-size: 13px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--cp-accent);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+h1 { font-size: 46px; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: 32px; line-height: 1.25; font-weight: 700; letter-spacing: -.01em; }
+h3 { font-size: 17px; font-weight: 700; }
+.sub { color: var(--cp-text-muted); font-size: 16px; margin-top: 10px; line-height: 1.6; }
+.slide-head { margin-bottom: 20px; flex: none; }
+.slide-head .rule {
+  width: 56px; height: 4px; border-radius: 999px;
+  background: var(--cp-accent); margin-top: 12px;
+}
+.body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; }
+
+/* ---------- primitives ---------- */
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.card.soft { background: var(--cp-surface-soft); box-shadow: none; }
+.card.accent { border-color: var(--cp-accent); background: var(--cp-accent-soft); box-shadow: none; }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g6 { grid-template-columns: repeat(6, 1fr); }
+.row { display: flex; gap: 14px; }
+.muted { color: var(--cp-text-muted); }
+.soft-text { color: var(--cp-text-soft); }
+.small { font-size: 13px; line-height: 1.6; }
+.xs { font-size: 12px; line-height: 1.55; }
+.mt6 { margin-top: 6px; } .mt10 { margin-top: 10px; } .mt14 { margin-top: 14px; }
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  background: var(--cp-surface-soft);
+}
+.tag.hot { border-color: var(--cp-accent); color: var(--cp-accent); background: var(--cp-accent-soft); }
+
+.kpi { text-align: center; padding: 14px 10px; }
+.kpi .num { font-size: 34px; font-weight: 700; color: var(--cp-accent); line-height: 1.1; }
+.kpi .lbl { font-size: 12px; color: var(--cp-text-muted); margin-top: 6px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--cp-border); }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--cp-text-muted); font-weight: 700; }
+tbody tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.hl td { background: var(--cp-highlight); font-weight: 600; }
+
+.bar-track { height: 7px; border-radius: 999px; background: var(--cp-surface-soft); border: 1px solid var(--cp-border); overflow: hidden; }
+.bar-fill { height: 100%; background: var(--cp-accent); border-radius: 999px; }
+
+.chain {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 13px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-left: 3px solid var(--cp-accent);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--cp-text);
+  line-height: 1.7;
+  word-break: break-word;
+}
+.quote {
+  border-left: 3px solid var(--cp-accent);
+  padding-left: 14px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+ul.clean { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+ul.clean li { position: relative; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+ul.clean li::before {
+  content: ""; position: absolute; left: 0; top: .62em;
+  width: 7px; height: 7px; border-radius: 999px; background: var(--cp-accent);
+}
+
+/* flow diagram */
+.flow-band {
+  border: 1px dashed var(--cp-border-strong);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: var(--cp-surface);
+}
+.chip {
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  border-radius: 10px;
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.chip .sysname { display: block; font-size: 11px; color: var(--cp-text-muted); font-weight: 500; margin-top: 3px; }
+.arrow-down { text-align: center; color: var(--cp-accent); font-size: 20px; line-height: 1; margin: 2px 0; }
+
+/* ---------- cover / closing ---------- */
+.cover { justify-content: center; background:
+  radial-gradient(120% 120% at 12% 0%, var(--cp-accent-soft) 0%, transparent 55%), var(--cp-bg-elevated); }
+.cover h1 { font-size: 54px; max-width: 900px; }
+.cover .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+.disclaimer {
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface);
+  line-height: 1.6;
+}
+
+/* ---------- chrome ---------- */
+.slide-footer {
+  position: absolute;
+  left: 56px; right: 56px; bottom: 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--cp-text-soft);
+  border-top: 1px solid var(--cp-border);
+  padding-top: 8px;
+}
+#controls {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cp-panel-strong);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  padding: 6px 10px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+  backdrop-filter: blur(6px);
+  z-index: 20;
+}
+#controls button {
+  font: inherit; font-size: 13px; cursor: pointer;
+  background: var(--cp-surface); color: var(--cp-text);
+  border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 5px 12px;
+}
+#controls button:hover { border-color: var(--cp-accent); color: var(--cp-accent); }
+#counter { font-size: 13px; color: var(--cp-text-muted); min-width: 54px; text-align: center; font-variant-numeric: tabular-nums; }
+#progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--cp-accent); width: 0; transition: width .25s ease; z-index: 21; }
+
+@media print {
+  body { overflow: visible; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #controls, #progress { display: none; }
+  #viewport { position: static; overflow: visible; }
+  #stage { position: static; transform: none !important; width: 1280px; height: auto; }
+  .slide { display: flex !important; position: relative; page-break-after: always; height: 720px; margin-bottom: 12px; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div id="viewport">
+<div id="stage">
+
+<!-- ============ 1 / 封面 ============ -->
+<section class="slide cover active">
+  <div class="eyebrow">Microsoft Fabric · 生命科学行业方案</div>
+  <h1>制药临床开发<br />跨系统智能问数 Demo</h1>
+  <p class="sub" style="max-width: 780px; font-size: 18px;">
+    把分散在六个源系统里的临床开发数据统一成一张知识图谱，<br />
+    让业务用户用中文直接提问，几秒内得到<strong>带证据链</strong>的答案。
+  </p>
+  <div class="meta">
+    <span class="tag hot">OneLake + Lakehouse</span>
+    <span class="tag hot">Fabric Graph（GQL）</span>
+    <span class="tag hot">Ontology 语义层</span>
+    <span class="tag hot">Data Agent 中文问数</span>
+  </div>
+  <div class="row mt14" style="margin-top: 34px; gap: 12px;">
+    <div class="card kpi" style="flex:1"><div class="num">6</div><div class="lbl">源系统统一</div></div>
+    <div class="card kpi" style="flex:1"><div class="num">1555</div><div class="lbl">图谱节点</div></div>
+    <div class="card kpi" style="flex:1"><div class="num">2950</div><div class="lbl">图谱关系边</div></div>
+    <div class="card kpi" style="flex:1"><div class="num">5</div><div class="lbl">类业务问题实测</div></div>
+  </div>
+  <div class="slide-footer"><span>制药临床开发跨系统智能问数 Demo</span><span>2026-09 · 全部为合成数据</span></div>
+</section>
+
+<!-- ============ 2 / 业务背景 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">业务背景</div>
+    <h2>系统各自都能用，问题出在跨系统</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="grid g6" style="gap:10px;">
+      <div class="chip">CTMS<span class="sysname">研究 / 中心 / 受试者</span></div>
+      <div class="chip">EDC<span class="sysname">访视 / 给药记录</span></div>
+      <div class="chip">Safety<span class="sysname">不良事件 / 安全信号</span></div>
+      <div class="chip">LIMS<span class="sysname">中心实验室检验</span></div>
+      <div class="chip">Knowledge<span class="sysname">靶点 / 通路知识库</span></div>
+      <div class="chip">Supply<span class="sysname">批次 / 运单</span></div>
+    </div>
+
+    <div class="row" style="flex:1; min-height:0;">
+      <div class="card accent" style="flex: 1.15; display:flex; flex-direction:column; justify-content:center;">
+        <div class="tag hot">典型场景</div>
+        <p class="quote mt10" style="margin-top:12px;">
+          某药品批次运输途中出现<strong>温度偏移</strong>，质量部门需要立刻知道：<br />
+          这个批次发到了哪些研究中心？哪些受试者实际用了它？<br />其中谁发生了严重不良事件？
+        </p>
+        <p class="small muted" style="margin-top:14px;">
+          回答它需要依次查供应链运单 → CTMS 受试者归属 → EDC 给药记录 → 安全数据库不良事件。
+        </p>
+      </div>
+      <div class="card" style="flex: .85; display:flex; flex-direction:column; justify-content:center;">
+        <h3>今天的现实</h3>
+        <ul class="clean mt10">
+          <li><strong>四个系统、四拨人、四次取数</strong>，通常以天为单位</li>
+          <li>系统之间既没有统一业务语言，也没有现成关联路径</li>
+          <li>而这类问题往往<strong>有时限要求</strong>（质量事件、安全信号评估）</li>
+          <li>人工拼接的结果难以复现，无法满足 GxP 审计追溯</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>业务背景</span><span>02 / 10</span></div>
+</section>
+
+<!-- ============ 3 / 五类业务问题 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">需求定义</div>
+    <h2>临床开发团队真实会问的五类问题</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="card" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <table>
+        <thead>
+          <tr><th style="width:64px;">编号</th><th>业务问题</th><th style="width:340px;">跨越的系统</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Q1</strong></td><td>某候选药物与某个不良事件之间有哪些可解释的机制通路，哪条证据最强</td><td class="muted">知识库</td></tr>
+          <tr class="hl"><td><strong>Q2</strong></td><td>某批次发生温度偏移，影响了哪些中心和受试者，谁发生了严重不良事件</td><td>供应链 → CTMS → EDC → 安全数据库</td></tr>
+          <tr><td><strong>Q3</strong></td><td>某个安全信号的完整证据链是什么</td><td class="muted">安全数据库 → CTMS → EDC → 实验室 → 知识库</td></tr>
+          <tr><td><strong>Q4</strong></td><td>共享靶点或通路的其他化合物是否可能共享同一风险</td><td class="muted">知识库 → CTMS</td></tr>
+          <tr><td><strong>Q5</strong></td><td>哪些研究中心风险最高，分别因为什么</td><td class="muted">CTMS → 安全数据库 → 供应链</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="card soft" style="flex:1"><h3>共同特征</h3><p class="small muted mt6">没有一个问题能在单一系统内回答，全部需要跨源关联。</p></div>
+      <div class="card soft" style="flex:1"><h3>本质是图问题</h3><p class="small muted mt6">"沿着关系走几跳"是关系型建模最不擅长、图最擅长的形态。</p></div>
+      <div class="card soft" style="flex:1"><h3>提问者是业务方</h3><p class="small muted mt6">质量、安全、医学团队不写 SQL，需要自然语言入口。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>需求定义</span><span>03 / 10</span></div>
+</section>
+
+<!-- ============ 4 / 解决方案架构 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">解决方案</div>
+    <h2>一个平台完成从源系统到业务问答的全链路</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="flow-band">
+      <div class="xs muted" style="margin-bottom:6px;">六个源系统，各自独立 Lakehouse（保留系统边界）</div>
+      <div class="grid g6" style="gap:8px;">
+        <div class="chip">CTMS</div><div class="chip">EDC</div><div class="chip">Safety</div>
+        <div class="chip">LIMS</div><div class="chip">Knowledge</div><div class="chip">Supply</div>
+      </div>
+    </div>
+    <div class="arrow-down">▼&nbsp;&nbsp;<span class="xs muted">01 摄取笔记本 · CSV → Delta，含非空断言</span></div>
+    <div class="card accent" style="padding:12px 16px;">
+      <strong>统一临床知识图谱 Lakehouse</strong>
+      <span class="mono small muted" style="margin-left:10px;">graph_nodes / graph_edges + 五张 gold 业务结果表</span>
+      <div class="xs muted mt6">02 笔记本：确定性图构建（BFS / Dijkstra）+ 五类业务分析，末尾断言节点数、边数与关键链路存在</div>
+    </div>
+    <div class="arrow-down">▼</div>
+    <div class="grid g3" style="flex:1; min-height:0;">
+      <div class="card">
+        <div class="tag hot">Fabric Graph</div>
+        <h3 class="mt10">负责算得对</h3>
+        <p class="small muted mt6">GQL 原生多跳遍历、可达性、影响面。不是预先算好的报表，是图上的实时遍历。</p>
+      </div>
+      <div class="card">
+        <div class="tag hot">Ontology</div>
+        <h3 class="mt10">负责说得清、管得住</h3>
+        <p class="small muted mt6">8 实体 / 9 关系，绑定横跨 5 个源系统；术语、口径与同义词集中治理。</p>
+      </div>
+      <div class="card">
+        <div class="tag hot">Data Agent</div>
+        <h3 class="mt10">负责问得方便</h3>
+        <p class="small muted mt6">中文自然语言问数，自动路由到 Lakehouse / Graph / Ontology 三个数据源。</p>
+      </div>
+    </div>
+    <div class="xs muted">部署产物：7 个 Lakehouse · 2 个笔记本 · 1 个图模型 · 1 个本体 · 1 个数据代理，由 5 个幂等脚本一键部署，无跨产品集成、无数据搬运到第三方图数据库。</div>
+  </div>
+  <div class="slide-footer"><span>解决方案架构</span><span>04 / 10</span></div>
+</section>
+
+<!-- ============ 5 / 统一图谱 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">数据资产</div>
+    <h2>统一图谱：价值集中在跨源那几条边</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="row">
+      <div class="card kpi" style="flex:1"><div class="num">1555</div><div class="lbl">节点 · 覆盖 16 类业务实体</div></div>
+      <div class="card kpi" style="flex:1"><div class="num">2950</div><div class="lbl">关系边 · 跨 6 个源系统</div></div>
+      <div class="card kpi" style="flex:1"><div class="num">120</div><div class="lbl">受试者 / 652 次访视</div></div>
+      <div class="card kpi" style="flex:1"><div class="num">109</div><div class="lbl">不良事件 / 3 个安全信号</div></div>
+    </div>
+    <div class="row" style="flex:1; min-height:0;">
+      <div class="card" style="flex:1.5; display:flex; flex-direction:column;">
+        <h3>跨源系统连接关系（由一句中文提问生成 GQL 得出）</h3>
+        <table class="mt6">
+          <thead><tr><th>关系</th><th>起点 → 终点</th><th class="num">边数</th><th>跨越的系统</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">HAS_VISIT</td><td>Subject → Visit</td><td class="num">652</td><td class="muted">CTMS → EDC</td></tr>
+            <tr><td class="mono">MEASURES</td><td>LabResult → Biomarker</td><td class="num">529</td><td class="muted">LIMS → Knowledge</td></tr>
+            <tr><td class="mono">HAS_LAB_RESULT</td><td>Visit → LabResult</td><td class="num">529</td><td class="muted">EDC → LIMS</td></tr>
+            <tr class="hl"><td class="mono">USED_BATCH</td><td>Visit → Batch</td><td class="num">481</td><td>EDC → Supply</td></tr>
+            <tr><td class="mono">CODED_AS</td><td>AdverseEvent → AEType</td><td class="num">109</td><td class="muted">Safety → Knowledge</td></tr>
+            <tr><td class="mono">EXPERIENCED</td><td>Subject → AdverseEvent</td><td class="num">109</td><td class="muted">CTMS → Safety</td></tr>
+            <tr class="hl"><td class="mono">DELIVERED_TO</td><td>Shipment → Site</td><td class="num">27</td><td>Supply → CTMS</td></tr>
+            <tr><td class="mono">BATCH_OF</td><td>Batch → Compound</td><td class="num">9</td><td class="muted">Supply → Knowledge</td></tr>
+          </tbody>
+        </table>
+        <p class="xs muted mt6">每一行在传统架构下都需要人工写一段 ETL 打通，并在需求变化时重写一次。</p>
+      </div>
+      <div class="card soft" style="flex:1; display:flex; flex-direction:column; gap:12px; justify-content:center;">
+        <div>
+          <h3>两类边，是证据可信度的基础</h3>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <strong style="font-size:14px;">运营边</strong>
+          <p class="xs muted mt6">来自事务系统的事实记录，例如"这名受试者用了这个批次"，视为确定事实。</p>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <strong style="font-size:14px;">知识边</strong>
+          <p class="xs muted mt6">来自转化医学知识库，带<strong>证据等级</strong>与<strong>置信度</strong>，例如"这条通路调控这个生物标志物"。</p>
+        </div>
+        <p class="xs muted">边按来源分布：EDC 1133 · LIMS 1058 · CTMS 359 · Safety 299 · Supply 63 · Knowledge 38</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>统一临床知识图谱</span><span>05 / 10</span></div>
+</section>
+
+<!-- ============ 6 / 三层分工 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">关键设计</div>
+    <h2>三个消费层各司其职，Data Agent 负责路由</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="card">
+      <h3>Data Agent 同时接入三个数据源，路由规则写在代理指令里</h3>
+      <table class="mt6">
+        <thead><tr><th style="width:280px;">数据源</th><th style="width:130px;">类型</th><th style="width:130px;">查询语言</th><th>承担的问题</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">LH_Curated_统一临床图谱</td><td>Lakehouse</td><td>T-SQL</td><td class="muted">Q1–Q5 五类预先计算好的业务问题</td></tr>
+          <tr><td class="mono">ClinicalKnowledgeGraph</td><td>Graph 模型</td><td>GQL</td><td class="muted">结果表未覆盖的关系探索与图统计</td></tr>
+          <tr><td class="mono">ClinicalDevelopmentOntology</td><td>Ontology</td><td>本体原生</td><td class="muted">业务概念定义与实体关系理解</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid g3" style="flex:1; min-height:0;">
+      <div class="card">
+        <h3>Graph — 算得对</h3>
+        <ul class="clean mt10">
+          <li>多跳路径、可达性、影响面是图原生能力</li>
+          <li>实时遍历，不是固化报表</li>
+          <li>新增一类关系不需要重建数据模型</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Ontology — 说得清、管得住</h3>
+        <ul class="clean mt10">
+          <li>术语与口径治理："严重不良事件""重要方案偏离""证据等级"定义在语义层，可审计</li>
+          <li>跨源统一：同一个"受试者"在 CTMS / EDC / Safety 里被绑定为同一实体</li>
+          <li>同义词映射："病人""患者""入组对象"指向同一概念</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Data Agent — 问得方便</h3>
+        <ul class="clean mt10">
+          <li>业务用户不需要知道表在哪、字段叫什么</li>
+          <li>回答附带证据等级、置信度、数据版本</li>
+          <li>通过 MCP 端点开放给外部 AI 应用调用</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card accent" style="padding:10px 14px;">
+      <p class="small"><strong>定位提醒：</strong>不要把 Ontology 说成"路径查询的必需组件"——客户会追问不用它行不行。正确说法是：<strong>Graph 负责算得对，Ontology 负责说得清、管得住、能复用。</strong></p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>三层分工与路由</span><span>06 / 10</span></div>
+</section>
+
+<!-- ============ 7 / Demo 1: Q2 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">Demo 演示 ① · 最有冲击力</div>
+    <h2>批次质量事件溯源：一句中文，跨四个系统</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="card accent" style="padding:12px 16px;">
+      <span class="tag hot">问</span>
+      <span style="font-size:17px; margin-left:8px;">批次 <strong class="mono">BATCH-007</strong> 发生温度偏移，影响了哪些中心和受试者？其中谁发生了严重不良事件？</span>
+    </div>
+    <div class="row" style="flex:1; min-height:0;">
+      <div class="card" style="flex:1.05; display:flex; flex-direction:column;">
+        <span class="tag">答 · 由已发布的 Data Agent 真实返回</span>
+        <div class="row mt10" style="gap:10px; margin-top:12px;">
+          <div class="card soft kpi" style="flex:1; padding:10px 6px;"><div class="num" style="font-size:28px;">3</div><div class="lbl">受影响运单</div></div>
+          <div class="card soft kpi" style="flex:1; padding:10px 6px;"><div class="num" style="font-size:28px;">3</div><div class="lbl">研究中心</div></div>
+          <div class="card soft kpi" style="flex:1; padding:10px 6px;"><div class="num" style="font-size:28px;">18</div><div class="lbl">受试者</div></div>
+          <div class="card soft kpi" style="flex:1; padding:10px 6px;"><div class="num" style="font-size:28px;">13</div><div class="lbl">严重不良事件</div></div>
+        </div>
+        <p class="small muted mt14">受影响中心：西安长安医院、武汉江城医院、芝加哥医学中心。<br />严重不良事件全部为 <strong>QT 间期延长</strong>，CTCAE 3 至 4 级。</p>
+        <div class="mt14">
+          <div class="xs muted" style="margin-bottom:6px;">完整溯源链路（示例）</div>
+          <div class="chain">BATCH-007 → SHIP-0019 → 西安长安医院 → SUBJ-0096 → QT间期延长（4级，可能有关）</div>
+        </div>
+      </div>
+      <div class="card soft" style="flex:.75; display:flex; flex-direction:column; justify-content:center;">
+        <h3>这个答案跨了四个系统</h3>
+        <ul class="clean mt10">
+          <li><strong>Supply</strong> 提供批次与运单</li>
+          <li><strong>CTMS</strong> 提供中心与受试者归属</li>
+          <li><strong>EDC</strong> 提供实际给药记录</li>
+          <li><strong>Safety</strong> 提供不良事件与严重程度</li>
+        </ul>
+        <div class="card accent mt14" style="padding:12px 14px; margin-top:18px;">
+          <p class="small"><strong>现场提问：</strong>请客户估算，他们今天做同样一件事需要多久？</p>
+          <p class="xs muted mt6">典型回答是"两三天"。本 Demo 的答案在几秒内返回，并附证据等级与数据版本。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Demo ① · Q2 批次影响溯源</span><span>07 / 10</span></div>
+</section>
+
+<!-- ============ 8 / Demo 2: Q1 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">Demo 演示 ② · 区分玩具与行业方案</div>
+    <h2>机制路径：跳数一样，"最优"靠口径分胜负</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="card accent" style="padding:10px 16px;">
+      <span class="tag hot">问</span>
+      <span style="font-size:16px; margin-left:8px;">研究化合物 <strong class="mono">SYN-101</strong> 与药物性肝损伤之间有哪些机制通路？哪条证据最强？</span>
+    </div>
+    <div class="card" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center;">
+      <table>
+        <thead><tr><th style="width:52px;">排名</th><th>机制链路</th><th class="num" style="width:64px;">跳数</th><th style="width:150px;">证据折损（越短越强）</th><th class="num" style="width:92px;">最差等级</th></tr></thead>
+        <tbody>
+          <tr class="hl">
+            <td><strong>1</strong></td>
+            <td>SYN-101 → 细胞色素P450 3A4 → 肝药物代谢通路 → 丙氨酸氨基转移酶 → 药物性肝损伤</td>
+            <td class="num">4</td>
+            <td><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div><span class="xs muted">0.39</span></td>
+            <td class="num">B</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>SYN-101 → 细胞色素P450 3A4 → 肝药物代谢通路 → 天冬氨酸氨基转移酶 → 药物性肝损伤</td>
+            <td class="num">4</td>
+            <td><div class="bar-track"><div class="bar-fill" style="width:73%"></div></div><span class="xs muted">0.46</span></td>
+            <td class="num">B</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>SYN-101 → Janus 激酶 1 → JAK-STAT 信号通路 → 丙氨酸氨基转移酶 → 药物性肝损伤</td>
+            <td class="num">4</td>
+            <td><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span class="xs muted">0.49</span></td>
+            <td class="num">B</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>SYN-101 → 细胞色素P450 3A4 → 肝药物代谢通路 → 总胆红素 → 药物性肝损伤</td>
+            <td class="num">4</td>
+            <td><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="xs muted">0.63</span></td>
+            <td class="num">B</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="card soft" style="flex:1.1">
+        <h3>四条链路跳数完全相同</h3>
+        <p class="small muted mt6">只看"最短路径"根本区分不出来。真正的业务判断依赖<strong>证据折损</strong>：代谢通路解释优于主靶点解释。</p>
+      </div>
+      <div class="card soft" style="flex:1.1">
+        <h3>口径定义在语义层</h3>
+        <p class="small muted mt6"><span class="mono">证据折损 = (1 − 置信度) + 证据等级惩罚</span>；A 级 0、B 级 0.05、C 级 0.15、D 级 0.30，越小越强。</p>
+      </div>
+      <div class="card soft" style="flex:.9">
+        <h3>先看最弱环节</h3>
+        <p class="small muted mt6">同时给出最差证据等级与最低置信度——审评场景里人先看短板，再看总分。</p>
+      </div>
+    </div>
+    <p class="xs muted">证据折损是来自图算法边权重的<strong>无量纲</strong>不确定度指标，与费用、预算、资源投入无关。</p>
+  </div>
+  <div class="slide-footer"><span>Demo ② · Q1 机制解释与证据口径</span><span>08 / 10</span></div>
+</section>
+
+<!-- ============ 9 / Demo 3: Q3 / Q4 / Q5 ============ -->
+<section class="slide">
+  <div class="slide-head">
+    <div class="eyebrow">Demo 演示 ③ · 从单点到组合</div>
+    <h2>信号证据链、风险外推与中心画像</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="body">
+    <div class="row" style="flex:1; min-height:0;">
+      <div class="card" style="flex:1; display:flex; flex-direction:column;">
+        <div class="tag hot">Q3 · 安全信号证据链</div>
+        <table class="mt10" style="margin-top:10px;">
+          <thead><tr><th>信号</th><th>化合物 / AE</th><th>状态</th><th class="num">AE</th><th class="num">严重</th><th class="num">异常检验</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">SIG-001</td><td class="xs">SYN-101 / 药物性肝损伤</td><td class="xs muted">评估中</td><td class="num">25</td><td class="num">6</td><td class="num">41</td></tr>
+            <tr class="hl"><td class="mono">SIG-002</td><td class="xs">SYN-401 / QT间期延长</td><td class="xs">已确认</td><td class="num">43</td><td class="num">24</td><td class="num">95</td></tr>
+            <tr><td class="mono">SIG-003</td><td class="xs">SYN-301 / 血小板减少症</td><td class="xs muted">评估中</td><td class="num">10</td><td class="num">5</td><td class="num">23</td></tr>
+          </tbody>
+        </table>
+        <div class="chain mt10" style="margin-top:12px;">SYN-401 → hERG 钾离子通道 → 心肌复极通路 → QTcF 间期 → QT间期延长</div>
+        <p class="xs muted mt10">信号评估同时需要<strong>临床证据</strong>（多少受试者、多少严重事件）与<strong>机制证据</strong>（生物学上讲不讲得通）。图把两类证据放进同一张网络。</p>
+      </div>
+      <div class="card" style="flex:1; display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <div class="tag hot">Q5 · 中心风险画像</div>
+          <table class="mt10" style="margin-top:10px;">
+            <thead><tr><th>研究中心</th><th class="num">受试者</th><th class="num">严重AE</th><th class="num">重要偏离</th><th class="num">风险分</th></tr></thead>
+            <tbody>
+              <tr class="hl"><td>武汉江城医院</td><td class="num">7</td><td class="num">5</td><td class="num">0</td><td class="num">46.86</td></tr>
+              <tr><td>芝加哥医学中心</td><td class="num">10</td><td class="num">5</td><td class="num">4</td><td class="num">46.00</td></tr>
+              <tr><td>大阪临床中心</td><td class="num">17</td><td class="num">11</td><td class="num">2</td><td class="num">42.35</td></tr>
+              <tr><td>西安长安医院</td><td class="num">6</td><td class="num">3</td><td class="num">1</td><td class="num">39.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card soft" style="padding:12px 14px;">
+          <div class="tag">Q4 · 同靶点风险外推</div>
+          <p class="small muted mt6">SYN-101 与 SYN-102 共享 <strong>Janus 激酶 1</strong> 靶点及 JAK-STAT、骨髓造血两条通路，可能共享药物性肝损伤、中性粒细胞减少症等风险 —— 支持<strong>管线层面提前布防</strong>，而不是事后补救。</p>
+        </div>
+      </div>
+    </div>
+    <div class="card accent" style="padding:12px 16px;">
+      <p class="small"><strong>确定性，是受监管行业能否落地的前提：</strong>路径与风险分由 BFS、Dijkstra 和确定性公式计算，<strong>不是模型打分</strong>。同样的输入永远得到同样的输出，可复现、可审计、可解释。图逻辑单一来源（<span class="mono">fabric/graph_logic.py</span>），本地先验证再上云，笔记本末尾写死断言，杜绝"跑成功了但表是空的"。</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Demo ③ · Q3 / Q4 / Q5</span><span>09 / 10</span></div>
+</section>
+
+<!-- ============ 10 / 结尾 ============ -->
+<section class="slide cover">
+  <div class="eyebrow">总结</div>
+  <h1 style="font-size:40px;">从"跨四个系统、等两三天"<br />到"一句中文、几秒钟"</h1>
+  <div class="grid g2 mt14" style="margin-top:26px; gap:14px;">
+    <div class="card"><h3>① 全链路在一个平台内完成</h3><p class="small muted mt6">六个源系统落地、统一、图建模、语义层、AI 问数全在 Fabric 内，OneLake 是唯一副本，无第三方图数据库。</p></div>
+    <div class="card"><h3>② 图是原生能力，不是外挂</h3><p class="small muted mt6">1555 节点 / 2950 边，价值集中在跨源的那 8 类关系上。</p></div>
+    <div class="card"><h3>③ 语义层让口径可治理</h3><p class="small muted mt6">"最佳路径""严重不良事件"的定义写在本体里，而非散落于各报表 SQL 与提示词，满足 GxP 审计。</p></div>
+    <div class="card"><h3>④ 结果确定、可复现、可审计</h3><p class="small muted mt6">确定性算法 + 落地断言 + 中文回归测试集，演示答案稳定。</p></div>
+  </div>
+  <div class="card soft mt14" style="margin-top:18px; padding:12px 16px;">
+    <strong style="font-size:14px;">建议演示节奏（20 分钟）</strong>
+    <p class="small muted mt6">① 先给冲击力：Q2 批次溯源（5 min） → ② 图原生能力：门户 GQL 实时多跳（5 min） → ③ 证据深度：Q1 跳数相同、折损不同（5 min） → ④ 治理与扩展：Ontology 跨 5 系统绑定 + Q4 风险外推（5 min）</p>
+  </div>
+  <div class="disclaimer" style="margin-top:14px;">
+    全部为合成数据。化合物代号、研究中心、研究者姓名与受试者编号均为虚构，不含任何真实受试者、试验、产品或受保护健康信息，不构成任何医学或用药结论。Ontology 与 Fabric Graph 仍包含预览能力，不应作为受监管临床决策的唯一依据；风险分与证据折损权重为演示设定，实际落地需与客户安全与质量团队共同定义。
+  </div>
+  <div class="slide-footer"><span>谢谢 · Microsoft Fabric 临床智能 Demo</span><span>10 / 10</span></div>
+</section>
+
+</div>
+</div>
+
+<div id="controls">
+  <button id="prev" type="button">← 上一页</button>
+  <span id="counter">1 / 10</span>
+  <button id="next" type="button">下一页 →</button>
+  <button id="theme" type="button">主题</button>
+</div>
+
+<script>
+(() => {
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const counter = document.getElementById("counter");
+  const progress = document.getElementById("progress");
+  const stage = document.getElementById("stage");
+  let index = 0;
+
+  function render() {
+    slides.forEach((s, i) => s.classList.toggle("active", i === index));
+    counter.textContent = `${index + 1} / ${slides.length}`;
+    progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+  }
+  function go(step) {
+    index = Math.min(slides.length - 1, Math.max(0, index + step));
+    render();
+  }
+  function fit() {
+    const scale = Math.min(
+      (window.innerWidth - 32) / 1280,
+      (window.innerHeight - 88) / 720
+    );
+    stage.style.transform = `translate(-50%, -50%) scale(${Math.max(scale, 0.1)})`;
+  }
+
+  document.getElementById("prev").addEventListener("click", () => go(-1));
+  document.getElementById("next").addEventListener("click", () => go(1));
+  document.getElementById("theme").addEventListener("click", () => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(1); }
+    else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if (e.key === "Home") { index = 0; render(); }
+    else if (e.key === "End") { index = slides.length - 1; render(); }
+  });
+  window.addEventListener("resize", fit);
+  window.addEventListener("load", fit);
+  new ResizeObserver(fit).observe(document.documentElement);
+
+  fit();
+  render();
+})();
+</script>
+</body>
+</html>

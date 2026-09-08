@@ -43,7 +43,7 @@ EDGE_PROPERTIES = [
     ("RelationshipTypeZh", "relationship_type_zh", "STRING"),
     ("EvidenceGrade", "evidence_grade", "STRING"),
     ("Confidence", "confidence", "FLOAT"),
-    ("ClinicalCost", "clinical_cost", "FLOAT"),
+    ("EvidencePenalty", "evidence_penalty", "FLOAT"),
     ("EdgeClass", "edge_class", "STRING"),
     ("SourceSystem", "source_system", "STRING"),
     ("DataVersion", "data_version", "INT"),
