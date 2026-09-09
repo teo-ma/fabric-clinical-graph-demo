@@ -227,9 +227,10 @@ BATCH-007 影响链中是否有严重不良事件。任一失败作业即失败�
 ## 八、已知限制
 
 - Ontology 与 Fabric Graph 仍包含预览能力，不应作为受监管临床决策的唯一依据。
-- 图查询（GQL）在门户交互式会话中正常；通过 MCP 端点用 Azure CLI 令牌调用时
-  会返回 `Access token is invalid`，同一代理的 SQL 查询不受影响。
-  因此图类问题的回归需在门户人工确认。
+- 图查询（GQL）在门户交互式会话与官方 GQL Query API
+  （`POST /v1/workspaces/{ws}/GraphModels/{id}/executeQuery?preview=true`）中均正常；
+  但通过 Data Agent 的 MCP 端点用 Azure CLI 令牌调用时会返回 `Access token is invalid`，
+  同一代理的 SQL 查询不受影响。
 - 全部数据为合成数据，机制关联与证据等级为演示构造，不反映任何真实生物学结论。
 - 风险分与证据折损的权重为演示设定，实际落地需与客户的安全与质量团队共同定义。
 - Fabric 官方文档目前仍说明 Data Agent 不支持非英语提问，但本 Demo 的中文问题
