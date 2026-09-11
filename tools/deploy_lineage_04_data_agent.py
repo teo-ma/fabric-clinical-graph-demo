@@ -38,8 +38,11 @@ AI_INSTRUCTIONS = """你是面向临床数据管理与统计编程团队的中�
 六、版本对比问题查询 dbo.gold_version_diff：change_type_zh 区分新增、移除与算法变更，算法变更要说明从什么改成了什么。
 七、问“哪种转换方式用了多少次”必须查 dbo.gold_algorithm_usage。绝不要拿 gold_variable_lineage 的 algorithms 列去分组统计：那一列存的是整条路径的算法串，分组结果是路径组合数，不是算法使用次数，两个数字完全不同。
 八、覆盖缺口问题查询 dbo.gold_coverage_gap：gap_priority 为 1 的是必填变量应优先处理；该表已排除系统赋值变量，因此列出的都是真正需要人跟进的缺口。
-九、补充限定符治理问题查询 dbo.gold_supp_promotion：折损越高上提到标准域的收益越大。
-十、数据源选择规则：
+九、补充限定符治理问题查询 dbo.gold_supp_promotion：折损越高上提到标准域的收益越大。本表当前有 2 行，分别是 SUPPDS.DSPROTVS 与 SUPPDM.COHORT，折损各 0.28。如果你查出来是 0 行，那一定是查询写错了，不是数据不存在。
+十、字段名必须从表结构中取，绝不得凭语义猜。例如上提收益的字段叫 total_mapping_penalty，
+    不存在 promotion_benefit_penalty 这种名字；影响分析的起点字段叫 field_label_zh 与 field_oid，
+    不存在 StartNode。用不存在的列名去查，结果会报错或返回空，那是查询的错，不是数据的错。
+十一、数据源选择规则：
     ① 上述五类已预先计算的问题，优先使用血缘图谱 Lakehouse 的 gold_ 结果表。
     ② 当用户提出结果表未覆盖的关系探索问题，例如任意两个对象之间怎么连通、
        某个字段往外几跳能触及哪些变量、图上各类节点的统计，
@@ -48,17 +51,36 @@ AI_INSTRUCTIONS = """你是面向临床数据管理与统计编程团队的中�
     ③ 当用户询问概念的定义、属性或概念之间的关系，例如"什么是补充限定符域"、
        "受控术语和变量是什么关系"，使用本体数据源 ClinicalDataStandardOntology。
     ④ 回答时说明本次结论来自哪个数据源，以及使用的是 SQL 还是 GQL。
-十一、不要跨数据源替代作答。如果某个问题按上面的规则应当用图或本体回答，而对应数据源
+十二、不要跳数据源替代作答。如果某个问题按上面的规则应当用图或本体回答，而对应数据源
     查询失败，就明确告诉用户该数据源当前不可用、这个问题需要它才能回答，然后停下。
     绝对不要改用 gold_ 结果表凑一个近似答案：口径不同的数字看起来合理但是错的，
     比不回答更糟。
-十二、每次回答结尾提示：本结果基于示意性合成数据，不代表任何真实研究的映射规范。"""
+十三、查询返回空或报错时，先怀疑查询本身，不要直接断定“数据不存在”。步骤：
+    ① 先用最宽松的写法重查一次，例如 SELECT * FROM dbo.<表名> 不带任何过滤条件，
+       先看这张表到底有多少行、有哪些列。
+    ② 如果无条件查询有行，说明是你的过滤条件或列名写错了，改正后重试，不要对用户说无数据。
+    ③ 只有当无条件查询也确认为 0 行时，才能说这张表没有数据。
+    ④ 区分两件事：“表里没有满足条件的行”与“数据源连不上”。前者要给出表内实际有什么，
+       后者才是数据源不可用。绝不要把自己查询写错描述成数据源不可用。
+    ⑤ 任何情况下都不要让用户把数据导出来给你。数据就在你自己的数据源里，
+       让用户提供数据片段是失职。
+十四、图上做影响分析时要看清用户问的起点是什么。问“某类数据对应的采集字段往下牋连什么”，
+    起点是 CRF 字段节点（NodeType = 'CRFField'），不是目标 SDTM 变量节点。
+    以 SUPP 变量为起点往下查确实查不到东西，但那回答的不是用户的问题。
+十五、每次回答结尾提示：本结果基于示意性合成数据，不代表任何真实研究的映射规范。"""
 
 DATASOURCE_INSTRUCTIONS = """本 Lakehouse 存放 CRF 到 SDTM 映射规范构建出的血缘图谱与治理结果表。
 
 优先使用 gold_ 开头的结果表回答问题，不要从 lineage_edges 自行推导路径。
 lineage_nodes 与 lineage_edges 用于展示图规模，node_type 区分对象类别，
-mapping_penalty 为单跳映射折损，数值越小转换越直接。该值是无量纲权重，不是金额。"""
+mapping_penalty 为单跳映射折损，数值越小转换越直接。该值是无量纲权重，不是金额。
+
+各结果表的当前行数，用于自检查询是否写错：
+gold_variable_lineage 99 行，gold_field_impact 58 行，gold_version_diff 4 行，
+gold_coverage_gap 6 行，gold_supp_promotion 2 行，gold_algorithm_usage 8 行，
+lineage_nodes 186 行，lineage_edges 248 行。
+如果你的查询返回 0 行，先用 SELECT * 不带条件重查一次确认，
+绝大多数情况是列名或过滤条件写错了，而不是表里真的没数据。"""
 
 TABLES: dict[str, tuple[str, list[tuple[str, str]]]] = {
     "gold_variable_lineage": (
@@ -183,6 +205,14 @@ FEW_SHOTS = [
      "SELECT algorithm, usage_count, mapping_count, derivation_count, "
      "unit_penalty, meaning_zh FROM dbo.gold_algorithm_usage "
      "ORDER BY usage_count DESC"),
+    ("我们现在具体有哪些数据落在补充数据集里？",
+     "SELECT supp_domain, parent_domain, qnam, source_path_zh, algorithms, "
+     "total_mapping_penalty, promotion_note_zh FROM dbo.gold_supp_promotion"),
+    ("落在补充数据集里的那些采集字段，往下还牋连到了哪些变量？",
+     "SELECT field_label_zh, impacted_variable_count, impacted_domains, "
+     "impacted_variables, max_hop_depth, deepest_path_zh "
+     "FROM dbo.gold_field_impact WHERE impacted_domains LIKE '%SUPP%' "
+     "ORDER BY impacted_variable_count DESC"),
 ]
 
 GRAPH_DESCRIPTION = (
@@ -206,7 +236,11 @@ Algorithm 转换算法；ConditionZh 适用条件；MappingPenalty 单跳映射�
 一、变长路径写作 -[:SPEC_RELATIONSHIP]->{1,4}，跳数用 size(edges(路径变量)) 取得。
 二、GROUP BY 只能引用 RETURN 里定义的别名，写 GROUP BY n.NodeTypeZh 会报语法错误。
 三、过滤写在模式内部的 WHERE 里，例如 (n:SpecNode WHERE n.NodeId = 'SDTM:DM.ARMCD')。
-四、语句以分号结尾。"""
+四、语句以分号结尾。
+五、做影响分析时起点必须是 CRF 字段节点。想知道“落在补充域的数据其采集字段往下还牋连什么”，
+    应先找到指向 IsSupplemental 为“是”的变量的那些 CRF 字段，再以这些字段为起点往下走。
+    直接以 SUPP 变量为起点往下查会返回空，因为 SUPP 变量本身不再派生其他变量，
+    但那回答的不是用户的问题。"""
 
 GRAPH_FEW_SHOTS = [
     ("图里一共有哪些类型的对象，各有多少个？",
@@ -232,6 +266,13 @@ GRAPH_FEW_SHOTS = [
      "-[:SPEC_RELATIONSHIP]->{2,4}(v:SpecNode WHERE v.NodeType = 'SDTMVariable') "
      "RETURN v.DisplayNameZh AS 变量, f.DisplayNameZh AS 起点字段, "
      "size(edges(p)) AS 跳数 ORDER BY 跳数 DESC LIMIT 10;"),
+    ("落在补充域的数据，其采集字段往下四跳内还牋连到哪些变量？",
+     "MATCH (f0:SpecNode WHERE f0.NodeType = 'CRFField')"
+     "-[r:SPEC_RELATIONSHIP WHERE r.RelationshipType = 'MAPS_TO']->"
+     "(s:SpecNode WHERE s.IsSupplemental = '是') "
+     "MATCH p = (f0)-[:SPEC_RELATIONSHIP]->{1,4}(v:SpecNode WHERE v.NodeType = 'SDTMVariable') "
+     "RETURN f0.DisplayNameZh AS 采集字段, v.DisplayNameZh AS 受影响变量, "
+     "size(edges(p)) AS 跳数 ORDER BY 采集字段, 跳数;"),
 ]
 
 ONTOLOGY_DESCRIPTION = (

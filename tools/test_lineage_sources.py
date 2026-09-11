@@ -50,6 +50,19 @@ PROBES = [
      ["Copy", "DT2DTC", "Derived", "Coding"],
      # 出现箭头就说明它又拿整条路径的算法串当算法名用了。
      ["->", "→"]),
+    # 实测踩过：代理编造了 promotion_benefit_penalty 这个列名，查询失败后
+    # 把"我查错了"说成"数据不存在"，还反过来让用户导出数据给它。
+    ("拒答·补充域治理",
+     "我们现在具体有哪些数据落在补充数据集里，能不能挪回正式数据集？",
+     ["SUPPDM", "SUPPDS", "COHORT", "DSPROTVS", "0.28"],
+     ["promotion_benefit_penalty", "无法列出", "返回空", "尚未预计算",
+      "提供你们系统里导出", "请你提供"]),
+    # 措辞刻意贴近 gold_field_impact 的口径（影响了哪些变量、涉及哪些域），
+    # 这样 SQL 就能答；若写成"隔几跳"会被路由到图，而图在 MCP 路径下不可用。
+    ("误报·补充域源字段影响面",
+     "写进补充数据集的那几个采集字段，改动会影响哪些变量、涉及哪些数据集？",
+     ["队列", "ARMCD", "SUPPDM"],
+     ["查询返回空", "尚未预计算", "尚未加载", "请你提供", "提供你们系统里导出"]),
 ]
 
 
@@ -100,7 +113,7 @@ async def main() -> None:
         print(f"{verdict:12s} {label}")
     bad = [v for v in verdicts if v[1] == "口径错误"]
     if bad:
-        raise SystemExit(f"存在口径错误的回答，必须修掉：{[b[0] for b in bad]}")
+        raise SystemExit(f"存在口径错误或误报无数据的回答，必须修掉：{[b[0] for b in bad]}")
 
 
 if __name__ == "__main__":
