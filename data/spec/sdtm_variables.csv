@@ -1,0 +1,103 @@
+domain,variable_name,variable_label_zh,core,data_type,codelist,expected_origin
+DM,STUDYID,研究标识符,Req,Char,,系统赋值
+DM,DOMAIN,域缩写,Req,Char,,系统赋值
+DM,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+DM,SUBJID,研究内受试者标识符,Req,Char,,系统赋值
+DM,RFSTDTC,研究参考开始日期,Exp,Char,,派生计算
+DM,RFENDTC,研究参考结束日期,Exp,Char,,派生计算
+DM,BRTHDTC,出生日期,Perm,Char,,CRF 采集
+DM,AGE,年龄,Exp,Num,,派生计算
+DM,AGEU,年龄单位,Exp,Char,AGEU,系统赋值
+DM,SEX,性别,Req,Char,SEX,CRF 采集
+DM,RACE,种族,Exp,Char,RACE,CRF 采集
+DM,ETHNIC,民族,Perm,Char,ETHNIC,CRF 采集
+DM,COUNTRY,国家,Req,Char,COUNTRY,CRF 采集
+DM,ARMCD,计划治疗组代码,Req,Char,ARM,CRF 采集
+DM,ARM,计划治疗组描述,Req,Char,ARM,CRF 采集
+SV,DOMAIN,域缩写,Req,Char,,系统赋值
+SV,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+SV,VISITNUM,访视号,Req,Num,,系统赋值
+SV,SVSTDTC,访视开始日期,Exp,Char,,CRF 采集
+SV,SVPRESP,是否预先指定,Perm,Char,NY,CRF 采集
+SV,SVOCCUR,是否发生,Perm,Char,NY,CRF 采集
+SV,SVREASND,未发生原因,Perm,Char,,CRF 采集
+AE,DOMAIN,域缩写,Req,Char,,系统赋值
+AE,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+AE,AETERM,报告的不良事件术语,Req,Char,,CRF 采集
+AE,AEDECOD,标准化不良事件术语,Req,Char,MEDDRA,派生计算
+AE,AEBODSYS,系统器官分类,Exp,Char,MEDDRA,派生计算
+AE,AESTDTC,事件开始日期,Exp,Char,,CRF 采集
+AE,AEENDTC,事件结束日期,Perm,Char,,CRF 采集
+AE,AESTDY,事件开始研究日,Perm,Num,,派生计算
+AE,AESER,是否严重,Req,Char,NY,CRF 采集
+AE,AESEV,严重程度,Exp,Char,AESEV,CRF 采集
+AE,AEREL,与研究药物关系,Exp,Char,AEREL,CRF 采集
+AE,AEOUT,转归,Perm,Char,OUT,CRF 采集
+AE,AEACN,对研究药物采取的措施,Perm,Char,ACN,CRF 采集
+AE,AETOXGR,毒性分级,Exp,Char,CTCAE,CRF 采集
+AE,AECONTRT,是否采取其他治疗措施,Perm,Char,NY,CRF 采集
+AE,EPOCH,试验阶段,Perm,Char,EPOCH,派生计算
+DS,DOMAIN,域缩写,Req,Char,,系统赋值
+DS,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+DS,DSTERM,报告的处置术语,Req,Char,,CRF 采集
+DS,DSDECOD,标准化处置术语,Req,Char,DSDECOD,CRF 采集
+DS,DSCAT,处置事件类别,Exp,Char,DSCAT,CRF 采集
+DS,DSSTDTC,处置事件开始日期,Exp,Char,,CRF 采集
+DS,DSSTDY,处置事件开始研究日,Perm,Num,,派生计算
+DS,EPOCH,试验阶段,Perm,Char,EPOCH,派生计算
+MH,DOMAIN,域缩写,Req,Char,,系统赋值
+MH,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+MH,MHTERM,报告的既往病史术语,Req,Char,,CRF 采集
+MH,MHDECOD,标准化既往病史术语,Perm,Char,MEDDRA,派生计算
+MH,MHSTDTC,疾病开始日期,Perm,Char,,CRF 采集
+MH,MHENRTPT,相对参考时点,Perm,Char,STENRF,CRF 采集
+CM,DOMAIN,域缩写,Req,Char,,系统赋值
+CM,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+CM,CMTRT,报告的药物名称,Req,Char,,CRF 采集
+CM,CMDECOD,标准化药物名称,Perm,Char,WHODRUG,派生计算
+CM,CMINDC,用药指征,Perm,Char,,CRF 采集
+CM,CMDOSE,剂量,Perm,Num,,CRF 采集
+CM,CMDOSU,剂量单位,Perm,Char,UNIT,CRF 采集
+CM,CMSTDTC,开始日期,Perm,Char,,CRF 采集
+CM,CMENDTC,结束日期,Perm,Char,,CRF 采集
+CM,CMDOSFRQ,给药频次,Perm,Char,FREQ,CRF 采集
+EX,DOMAIN,域缩写,Req,Char,,系统赋值
+EX,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+EX,EXTRT,研究治疗名称,Req,Char,TRT,CRF 采集
+EX,EXDOSE,剂量,Exp,Num,,CRF 采集
+EX,EXDOSU,剂量单位,Exp,Char,UNIT,CRF 采集
+EX,EXSTDTC,给药开始日期,Exp,Char,,CRF 采集
+EX,EXENDTC,给药结束日期,Perm,Char,,CRF 采集
+LB,DOMAIN,域缩写,Req,Char,,系统赋值
+LB,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+LB,LBTESTCD,检验项目短名,Req,Char,LBTEST,CRF 采集
+LB,LBTEST,检验项目名称,Req,Char,LBTEST,系统赋值
+LB,LBORRES,原始结果,Exp,Char,,CRF 采集
+LB,LBORRESU,原始结果单位,Exp,Char,UNIT,CRF 采集
+LB,LBSTRESC,标准化结果字符型,Exp,Char,,派生计算
+LB,LBSTRESN,标准化结果数值型,Exp,Num,,派生计算
+LB,LBSTRESU,标准化结果单位,Exp,Char,UNIT,派生计算
+LB,LBNRIND,参考范围指示,Perm,Char,NRIND,派生计算
+LB,LBDTC,采样日期,Exp,Char,,CRF 采集
+LB,LBFAST,是否空腹,Perm,Char,NY,CRF 采集
+LB,LBBLFL,基线标志,Perm,Char,NY,派生计算
+VS,DOMAIN,域缩写,Req,Char,,系统赋值
+VS,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+VS,VSTESTCD,检查项目短名,Req,Char,VSTEST,系统赋值
+VS,VSORRES,原始结果,Exp,Char,,CRF 采集
+VS,VSSTRESN,标准化结果数值型,Exp,Num,,派生计算
+VS,VSDTC,测量日期,Exp,Char,,CRF 采集
+VS,VSPOS,测量体位,Perm,Char,POSITION,CRF 采集
+EG,DOMAIN,域缩写,Req,Char,,系统赋值
+EG,USUBJID,唯一受试者标识符,Req,Char,,系统赋值
+EG,EGTESTCD,检查项目短名,Req,Char,EGTEST,系统赋值
+EG,EGORRES,原始结果,Exp,Char,,CRF 采集
+EG,EGSTRESN,标准化结果数值型,Exp,Num,,派生计算
+EG,EGDTC,检查日期,Exp,Char,,CRF 采集
+EG,EGMETHOD,检查方法,Perm,Char,EGMETHOD,CRF 采集
+SUPPDM,QNAM,限定符变量名,Req,Char,,系统赋值
+SUPPDM,QVAL,限定符值,Req,Char,,CRF 采集
+SUPPDS,QNAM,限定符变量名,Req,Char,,系统赋值
+SUPPDS,QVAL,限定符值,Req,Char,,CRF 采集
+SUPPAE,QNAM,限定符变量名,Req,Char,,系统赋值
+SUPPAE,QVAL,限定符值,Req,Char,,CRF 采集

@@ -1,0 +1,14 @@
+domain,domain_label_zh,observation_class,is_supplemental,parent_domain
+DM,人口学,Special Purpose,否,
+SV,受试者访视,Special Purpose,否,
+MH,既往病史,Events,否,
+AE,不良事件,Events,否,
+DS,研究处置,Events,否,
+CM,合并用药,Interventions,否,
+EX,暴露给药,Interventions,否,
+LB,实验室检查,Findings,否,
+VS,生命体征,Findings,否,
+EG,心电图,Findings,否,
+SUPPDM,人口学补充限定符,Relationship,是,DM
+SUPPDS,处置补充限定符,Relationship,是,DS
+SUPPAE,不良事件补充限定符,Relationship,是,AE

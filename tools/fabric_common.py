@@ -75,15 +75,17 @@ def wait_lro(headers: dict, label: str, timeout_s: int = 900) -> dict:
     raise TimeoutError(f"{label} 等待超时")
 
 
-def load_state() -> dict:
-    if STATE_PATH.exists():
-        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
+def load_state(path: Path | None = None) -> dict:
+    target = path or STATE_PATH
+    if target.exists():
+        return json.loads(target.read_text(encoding="utf-8"))
     return {}
 
 
-def save_state(state: dict) -> None:
-    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+def save_state(state: dict, path: Path | None = None) -> None:
+    target = path or STATE_PATH
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def find_item(workspace_id: str, display_name: str, item_type: str) -> str | None:

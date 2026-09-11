@@ -1,0 +1,118 @@
+library,version,form_oid,field_oid,field_label_en,field_label_zh,field_type,codelist,acrf_page,field_order
+SSL,V1,IC,ICYN,Was informed consent obtained?,是否已获得知情同意,RadioButton,NY,1,1
+SSL,V1,IC,ICDAT,Date informed consent signed,知情同意签署日期,DateTime,,1,2
+SSL,V1,IC,ICPVER,Protocol version consented,知情的方案版本,DropDownList,PROTVER,1,3
+SSL,V1,DM,BRTHDAT,Date of birth,出生日期,DateTime,,3,4
+SSL,V1,DM,SEXCD,Sex,性别,RadioButton,SEX,3,5
+SSL,V1,DM,RACECD,Race,种族,Checkbox,RACE,3,6
+SSL,V1,DM,ETHNICCD,Ethnicity,民族,RadioButton,ETHNIC,3,7
+SSL,V1,DM,CNTRYCD,Country,国家,DropDownList,COUNTRY,3,8
+SSL,V1,EN,ENRLYN,Was subject enrolled?,受试者是否入组,RadioButton,NY,5,9
+SSL,V1,EN,ENRLDAT,Date of enrollment,入组日期,DateTime,,5,10
+SSL,V1,EN,RANDDAT,Date of randomization,随机日期,DateTime,,5,11
+SSL,V1,EN,SFREAS,Reason for screen failure,筛选失败原因,DropDownList,SFREAS,5,12
+SSL,V1,EN,ARMASSN,Assigned treatment arm,分配的治疗组,DropDownList,ARM,5,13
+SSL,V1,EN,COHORTCD,Cohort,队列,DropDownList,COHORT,5,14
+SSL,V1,SV,VISOCC,Did visit occur?,访视是否发生,RadioButton,NY,7,15
+SSL,V1,SV,VISDAT,Date of visit,访视日期,DateTime,,7,16
+SSL,V1,SV,VISNDRS,Reason visit not done,访视未进行原因,Text,,7,17
+SSL,V1,MH,MHTERM,Medical history term,既往病史术语,Text,,9,18
+SSL,V1,MH,MHSTDAT,Start date of condition,疾病开始日期,DateTime,,9,19
+SSL,V1,MH,MHONGO,Ongoing?,是否持续,RadioButton,NY,9,20
+SSL,V1,AE,AETERM,Adverse event term,不良事件术语,Text,,11,21
+SSL,V1,AE,AESTDAT,Start date of event,事件开始日期,DateTime,,11,22
+SSL,V1,AE,AEENDAT,End date of event,事件结束日期,DateTime,,11,23
+SSL,V1,AE,AESERYN,Serious?,是否严重,RadioButton,NY,11,24
+SSL,V1,AE,AESEVCD,Severity,严重程度,DropDownList,AESEV,11,25
+SSL,V1,AE,AERELCD,Relationship to study drug,与研究药物关系,DropDownList,AEREL,11,26
+SSL,V1,AE,AEOUTCD,Outcome,转归,DropDownList,OUT,11,27
+SSL,V1,AE,AEACNCD,Action taken with study drug,对研究药物采取的措施,DropDownList,ACN,11,28
+SSL,V1,CM,CMTRT,Medication name,药物名称,Text,,14,29
+SSL,V1,CM,CMSTDAT,Start date,开始日期,DateTime,,14,30
+SSL,V1,CM,CMENDAT,End date,结束日期,DateTime,,14,31
+SSL,V1,CM,CMINDC,Indication,用药指征,Text,,14,32
+SSL,V1,CM,CMDOSE,Dose,剂量,Number,,14,33
+SSL,V1,CM,CMDOSU,Dose unit,剂量单位,DropDownList,UNIT,14,34
+SSL,V1,EX,EXTRTCD,Study treatment,研究治疗,DropDownList,TRT,16,35
+SSL,V1,EX,EXDOSE,Dose administered,给药剂量,Number,,16,36
+SSL,V1,EX,EXDOSU,Dose unit,剂量单位,DropDownList,UNIT,16,37
+SSL,V1,EX,EXSTDAT,Start date of administration,给药开始日期,DateTime,,16,38
+SSL,V1,EX,EXENDAT,End date of administration,给药结束日期,DateTime,,16,39
+SSL,V1,LB,LBTESTCD,Laboratory test,检验项目,DropDownList,LBTEST,18,40
+SSL,V1,LB,LBORRES,Result,检验结果,Text,,18,41
+SSL,V1,LB,LBORRESU,Result unit,结果单位,DropDownList,UNIT,18,42
+SSL,V1,LB,LBDAT,Collection date,采样日期,DateTime,,18,43
+SSL,V1,LB,LBFASTYN,Fasting?,是否空腹,RadioButton,NY,18,44
+SSL,V1,VS,VSDAT,Measurement date,测量日期,DateTime,,21,45
+SSL,V1,VS,SYSBP,Systolic blood pressure,收缩压,Number,,21,46
+SSL,V1,VS,DIABP,Diastolic blood pressure,舒张压,Number,,21,47
+SSL,V1,VS,PULSE,Pulse rate,脉率,Number,,21,48
+SSL,V1,VS,TEMPC,Temperature,体温,Number,,21,49
+SSL,V1,VS,WEIGHTKG,Weight,体重,Number,,21,50
+SSL,V1,EG,EGDAT,ECG date,心电图日期,DateTime,,23,51
+SSL,V1,EG,EGQTCF,QTcF interval,QTcF 间期,Number,,23,52
+SSL,V1,EG,EGINTP,Overall interpretation,总体判读,DropDownList,EGINTP,23,53
+SSL,V1,DS,DSCOMPYN,Did subject complete the study?,受试者是否完成研究,RadioButton,NY,25,54
+SSL,V1,DS,DSDAT,Date of disposition event,处置事件日期,DateTime,,25,55
+SSL,V1,DS,DSREASCD,Reason for discontinuation,终止原因,DropDownList,DSREAS,25,56
+SSL,V1,DS,DSOTHSP,"Other reason, specify",其他原因说明,Text,,25,57
+SSL,V1,EN,SCRNPREV,Was subject screened previously?,既往是否曾筛选,RadioButton,NY,5,58
+SSL,V2,IC,ICYN,Was informed consent obtained?,是否已获得知情同意,RadioButton,NY,1,1
+SSL,V2,IC,ICDAT,Date informed consent signed,知情同意签署日期,DateTime,,1,2
+SSL,V2,IC,ICPVER,Protocol version consented,知情的方案版本,DropDownList,PROTVER,1,3
+SSL,V2,DM,BRTHDAT,Date of birth,出生日期,DateTime,,3,4
+SSL,V2,DM,SEXCD,Sex,性别,RadioButton,SEX,3,5
+SSL,V2,DM,RACECD,Race,种族,Checkbox,RACE,3,6
+SSL,V2,DM,ETHNICCD,Ethnicity,民族,RadioButton,ETHNIC,3,7
+SSL,V2,DM,CNTRYCD,Country,国家,DropDownList,COUNTRY,3,8
+SSL,V2,EN,ENRLYN,Was subject enrolled?,受试者是否入组,RadioButton,NY,5,9
+SSL,V2,EN,ENRLDAT,Date of enrollment,入组日期,DateTime,,5,10
+SSL,V2,EN,RANDDAT,Date of randomization,随机日期,DateTime,,5,11
+SSL,V2,EN,SFREAS,Reason for screen failure,筛选失败原因,DropDownList,SFREAS,5,12
+SSL,V2,EN,ARMASSN,Assigned treatment arm,分配的治疗组,DropDownList,ARM,5,13
+SSL,V2,EN,COHORTCD,Cohort,队列,DropDownList,COHORT,5,14
+SSL,V2,SV,VISOCC,Did visit occur?,访视是否发生,RadioButton,NY,7,15
+SSL,V2,SV,VISDAT,Date of visit,访视日期,DateTime,,7,16
+SSL,V2,SV,VISNDRS,Reason visit not done,访视未进行原因,Text,,7,17
+SSL,V2,MH,MHTERM,Medical history term,既往病史术语,Text,,9,18
+SSL,V2,MH,MHSTDAT,Start date of condition,疾病开始日期,DateTime,,9,19
+SSL,V2,MH,MHONGO,Ongoing?,是否持续,RadioButton,NY,9,20
+SSL,V2,AE,AETERM,Adverse event term,不良事件术语,Text,,11,21
+SSL,V2,AE,AESTDAT,Start date of event,事件开始日期,DateTime,,11,22
+SSL,V2,AE,AEENDAT,End date of event,事件结束日期,DateTime,,11,23
+SSL,V2,AE,AESERYN,Serious?,是否严重,RadioButton,NY,11,24
+SSL,V2,AE,AESEVCD,Severity,严重程度,DropDownList,AESEV,11,25
+SSL,V2,AE,AERELCD,Relationship to study drug,与研究药物关系,DropDownList,AEREL,11,26
+SSL,V2,AE,AEOUTCD,Outcome,转归,DropDownList,OUT,11,27
+SSL,V2,AE,AEACNCD,Action taken with study drug,对研究药物采取的措施,DropDownList,ACN,11,28
+SSL,V2,CM,CMTRT,Medication name,药物名称,Text,,14,29
+SSL,V2,CM,CMSTDAT,Start date,开始日期,DateTime,,14,30
+SSL,V2,CM,CMENDAT,End date,结束日期,DateTime,,14,31
+SSL,V2,CM,CMINDC,Indication,用药指征,Text,,14,32
+SSL,V2,CM,CMDOSE,Dose,剂量,Number,,14,33
+SSL,V2,CM,CMDOSU,Dose unit,剂量单位,DropDownList,UNIT,14,34
+SSL,V2,EX,EXTRTCD,Study treatment,研究治疗,DropDownList,TRT,16,35
+SSL,V2,EX,EXDOSE,Dose administered,给药剂量,Number,,16,36
+SSL,V2,EX,EXDOSU,Dose unit,剂量单位,DropDownList,UNIT,16,37
+SSL,V2,EX,EXSTDAT,Start date of administration,给药开始日期,DateTime,,16,38
+SSL,V2,EX,EXENDAT,End date of administration,给药结束日期,DateTime,,16,39
+SSL,V2,LB,LBTESTCD,Laboratory test,检验项目,DropDownList,LBTEST,18,40
+SSL,V2,LB,LBORRES,Result,检验结果,Text,,18,41
+SSL,V2,LB,LBORRESU,Result unit,结果单位,DropDownList,UNIT,18,42
+SSL,V2,LB,LBDAT,Collection date,采样日期,DateTime,,18,43
+SSL,V2,LB,LBFASTYN,Fasting?,是否空腹,RadioButton,NY,18,44
+SSL,V2,VS,VSDAT,Measurement date,测量日期,DateTime,,21,45
+SSL,V2,VS,SYSBP,Systolic blood pressure,收缩压,Number,,21,46
+SSL,V2,VS,DIABP,Diastolic blood pressure,舒张压,Number,,21,47
+SSL,V2,VS,PULSE,Pulse rate,脉率,Number,,21,48
+SSL,V2,VS,TEMPC,Temperature,体温,Number,,21,49
+SSL,V2,VS,WEIGHTKG,Weight,体重,Number,,21,50
+SSL,V2,EG,EGDAT,ECG date,心电图日期,DateTime,,23,51
+SSL,V2,EG,EGQTCF,QTcF interval,QTcF 间期,Number,,23,52
+SSL,V2,EG,EGINTP,Overall interpretation,总体判读,DropDownList,EGINTP,23,53
+SSL,V2,DS,DSCOMPYN,Did subject complete the study?,受试者是否完成研究,RadioButton,NY,25,54
+SSL,V2,DS,DSDAT,Date of disposition event,处置事件日期,DateTime,,25,55
+SSL,V2,DS,DSREASCD,Reason for discontinuation,终止原因,DropDownList,DSREAS,25,56
+SSL,V2,DS,DSOTHSP,"Other reason, specify",其他原因说明,Text,,25,57
+SSL,V2,IC,RICFYN,Was re-consent obtained?,是否已获得再次知情同意,RadioButton,NY,1,58
+SSL,V2,IC,RICFDAT,Date of re-consent,再次知情同意日期,DateTime,,1,59

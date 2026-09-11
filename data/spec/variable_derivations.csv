@@ -1,0 +1,23 @@
+source_domain,source_variable,target_domain,target_variable,algorithm,note_zh
+EX,EXSTDTC,DM,RFSTDTC,Derived,取首次给药日期作为研究参考开始日期
+EX,EXENDTC,DM,RFENDTC,Derived,取末次给药日期作为研究参考结束日期
+DM,BRTHDTC,DM,AGE,Derived,由出生日期与参考开始日期计算年龄
+DM,RFSTDTC,DM,AGE,Derived,年龄计算的参考基准
+DM,RFSTDTC,AE,AESTDY,Derived,研究日计算基准
+AE,AESTDTC,AE,AESTDY,Derived,由事件开始日期与参考开始日期计算研究日
+DM,RFSTDTC,DS,DSSTDY,Derived,研究日计算基准
+DS,DSSTDTC,DS,DSSTDY,Derived,由处置日期与参考开始日期计算研究日
+AE,AETERM,AE,AEDECOD,Coding,经 MedDRA 编码得到标准术语
+MH,MHTERM,MH,MHDECOD,Coding,经 MedDRA 编码得到标准术语
+AE,AEDECOD,AE,AEBODSYS,Coding,由标准术语得到系统器官分类
+CM,CMTRT,CM,CMDECOD,Coding,经 WHO Drug 编码得到标准名称
+LB,LBORRES,LB,LBSTRESC,Derived,原始结果标准化为字符型
+LB,LBSTRESC,LB,LBSTRESN,Derived,字符型标准结果转数值型
+LB,LBORRESU,LB,LBSTRESU,Lookup,单位换算到标准单位
+LB,LBSTRESN,LB,LBNRIND,Derived,与参考范围比较得到高低指示
+LB,LBDTC,LB,LBBLFL,Derived,与首次给药日期比较确定基线标志
+DM,RFSTDTC,LB,LBBLFL,Derived,基线判定基准
+VS,VSORRES,VS,VSSTRESN,Derived,原始结果转标准数值
+EG,EGORRES,EG,EGSTRESN,Derived,原始结果转标准数值
+DS,DSSTDTC,DS,EPOCH,Derived,由处置日期落入的试验阶段推导
+AE,AESTDTC,AE,EPOCH,Derived,由事件日期落入的试验阶段推导

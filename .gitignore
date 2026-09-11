@@ -3,3 +3,9 @@ __pycache__/
 .DS_Store
 .venv/
 venv/
+
+# 客户机密与第三方版权材料，仅供本地参考，禁止提交
+image/
+docs/SDTMIG_v3.4.pdf
+*.xlsx
+*.xls

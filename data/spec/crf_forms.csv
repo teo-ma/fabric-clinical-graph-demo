@@ -1,0 +1,25 @@
+library,version,form_oid,form_name_en,form_name_zh,page
+SSL,V1,IC,Informed Consent,知情同意,1
+SSL,V1,DM,Demographics,人口学,3
+SSL,V1,EN,Enrollment,入组,5
+SSL,V1,SV,Subject Visit,受试者访视,7
+SSL,V1,MH,Medical History,既往病史,9
+SSL,V1,AE,Adverse Events,不良事件,11
+SSL,V1,CM,Concomitant Medications,合并用药,14
+SSL,V1,EX,Study Drug Administration,研究药物给药,16
+SSL,V1,LB,Laboratory Results,实验室检查,18
+SSL,V1,VS,Vital Signs,生命体征,21
+SSL,V1,EG,Electrocardiogram,心电图,23
+SSL,V1,DS,Disposition,研究处置,25
+SSL,V2,IC,Informed Consent,知情同意,1
+SSL,V2,DM,Demographics,人口学,3
+SSL,V2,EN,Enrollment,入组,5
+SSL,V2,SV,Subject Visit,受试者访视,7
+SSL,V2,MH,Medical History,既往病史,9
+SSL,V2,AE,Adverse Events,不良事件,11
+SSL,V2,CM,Concomitant Medications,合并用药,14
+SSL,V2,EX,Study Drug Administration,研究药物给药,16
+SSL,V2,LB,Laboratory Results,实验室检查,18
+SSL,V2,VS,Vital Signs,生命体征,21
+SSL,V2,EG,Electrocardiogram,心电图,23
+SSL,V2,DS,Disposition,研究处置,25

@@ -1,0 +1,18 @@
+{
+  "workspace_id": "20cf3003-0646-4a6a-935a-b48801503a94",
+  "capacity_id": "0f6e9354-acfb-40ec-b6cb-81d94d8b8b68",
+  "lakehouses": {
+    "spec": "79d41840-3e22-410c-9da2-08f0193d774d",
+    "curated": "08a9ad94-953a-4795-9894-079d7530ebea"
+  },
+  "notebooks": {
+    "11_映射规范摄取": "4aacdcbb-5251-4716-827b-0c98203dc75a",
+    "12_血缘图谱与治理洞察": "55043144-8fa0-4c07-896b-a4b621ee5e4a"
+  },
+  "graph_model_id": "d67b896e-1151-4c6a-8f0d-34f168847358",
+  "ontology_id": "33545c69-7e0a-401c-9b8c-e972fbb54cdf",
+  "agent_has_ontology_source": true,
+  "data_agent_id": "ddb56266-5e19-49e6-8338-3a41ed953e5d",
+  "data_agent_mcp": "https://api.fabric.microsoft.com/v1/mcp/workspaces/20cf3003-0646-4a6a-935a-b48801503a94/dataagents/ddb56266-5e19-49e6-8338-3a41ed953e5d/agent",
+  "ontology_graph_id": "160401c6-f7e5-4ce3-8db3-ff865b6a916f"
+}
